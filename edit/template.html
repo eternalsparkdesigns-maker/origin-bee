@@ -677,8 +677,8 @@ img { max-width: 100%; display: block; }
 <div style="min-height:100dvh; background:#FCEEE5; display:flex; flex-direction:column; align-items:center; padding:20px 16px 56px; font-family:'DM Sans',sans-serif;">
 
   <div style="text-align:center; margin-bottom:16px; max-width:400px; width:100%;">
-    <h1 style="font-family:'Gopher','DM Sans',sans-serif; font-size:clamp(22px,5.5vw,38px); color:#EB5E54; margin:0 0 5px; line-height:1.1; letter-spacing:-0.2px;">PT Month Spelling Bee</h1>
-    <p style="color:#EB5E54; font-size:14px; font-weight:700; margin:0 0 4px; line-height:1.4;">Happy National Physical Therapy Month! 🍂 Here's to our PTs and PTAs.</p>
+    <h1 style="font-family:'Gopher','DM Sans',sans-serif; font-size:clamp(22px,5.5vw,38px); color:#EB5E54; margin:0 0 5px; line-height:1.1; letter-spacing:-0.2px;">{{ title }}</h1>
+    <p style="color:#EB5E54; font-size:14px; font-weight:700; margin:0 0 4px; line-height:1.4;">{{ banner }}</p>
     <p style="color:#79242F; font-size:13px; margin:0; opacity:0.75; line-height:1.5;">Make words using the letters. <strong>Center letter</strong> must be in every word. Words must be 4+ letters.</p>
   </div>
 
@@ -741,7 +741,7 @@ img { max-width: 100%; display: block; }
   </div>
 
   <div style="margin-top:12px; font-size:12px; color:#79242F; opacity:0.45; text-align:center; line-height:1.6;">
-    Letters: S · T · R · N · G · H + <strong style="color:#EB5E54; opacity:1;">E</strong> (center)<br>
+    Letters: {{ outerLine }} + <strong style="color:#EB5E54; opacity:1;">{{ center }}</strong> (center)<br>
     4 letters = 1 pt · longer words = 1 pt per letter · Pangram uses all 7 letters
   </div>
 
@@ -749,9 +749,6 @@ img { max-width: 100%; display: block; }
 </x-dc>
 <script type="text/x-dc" data-dc-script="">
 class Component extends DCLogic {
-  CENTER = 'E';
-  ALL_LETTERS = ['S','T','R','E','N','G','H'];
-  OUTER_INIT = ['S','T','R','N','G','H'];
 
   // Hex layout positions (top-left, container 228x220)
   HEX_POSITIONS = [
@@ -764,30 +761,31 @@ class Component extends DCLogic {
     { i: 6, left: 114, top: 132 },
   ];
 
-  // All valid words (4+ letters, contain E, use only S T R E N G H).
-  // October 2026: National Physical Therapy Month. Pangrams spell STRENGTH.
-  ALL_WORDS = [
-    // 4-letter (1pt)
-    'ERRS','GENE','GENT','GETS','GHEE','HENS','HERE','HERS','NEST','NETS',
-    'RENT','REST','SEEN','SEER','SEES','SENT','SETS','TEEN','TEES','TENS',
-    'TENT','TERN','TEST','THEE','THEN','TREE',
-    // 5-letter (5pt)
-    'EGRET','ENTER','ESTER','ETHER','GEESE','GENES','GENRE','GENTS','GREEN','GREET',
-    'HENGE','NESTS','RENTS','RESET','RESTS','SENSE','SERGE','SHEEN','SHEER','SHEET',
-    'SNEER','STEER','STERN','TEENS','TEETH','TENET','TENSE','TENTH','TENTS','TERNS',
-    'TERSE','TESTS','THERE','THESE','THREE','TREES','TRESS',
-    // 6-letter (6pt)
-    'EGRESS','EGRETS','ENTERS','ENTREE','ESTERS','ETHERS','GENRES','GREENS','GREETS','NETHER',
-    'REGENT','REGRET','RENEGE','RENTER','RESENT','RESETS','RETEST','SEETHE','SENSES','SERENE',
-    'SETTEE','SETTER','SHEETS','SNEERS','STEERS','STERNS','STREET','STRESS','TEETER','TENETS',
-    'TENSER','TENSES','TENTHS','TERSER','TESTER','TETHER','THESES','THREES','THRESH','TSETSE',
-    // 7+ letters
-    'ENTREES','GREENER','REENTER','REGENTS','REGRESS','REGRETS','RENEGES','RENTERS','RESENTS','RETESTS',
-    'SEETHES','SETTEES','SETTERS','STREETS','TEETERS','TENSEST','TESTERS','TETHERS',
-    'ETHERNET','GREENEST','REENTERS','STERNEST','STRESSES','TERSEST',
-    // Pangrams (+7 bonus): all seven letters
-    'STRENGTH','STRENGTHS','STRENGTHEN','STRENGTHENS','STRENGTHENER',
-  ];
+  DEFAULT = /*DEFAULT*/{"start": null, "title": "PT Month Spelling Bee", "banner": "Happy National Physical Therapy Month! 🍂 Here's to our PTs and PTAs.", "center": "E", "outer": ["S", "T", "R", "N", "G", "H"], "words": ["ERRS", "GENE", "GENT", "GETS", "GHEE", "HENS", "HERE", "HERS", "NEST", "NETS", "RENT", "REST", "SEEN", "SEER", "SEES", "SENT", "SETS", "TEEN", "TEES", "TENS", "TENT", "TERN", "TEST", "THEE", "THEN", "TREE", "EGRET", "ENTER", "ESTER", "ETHER", "GEESE", "GENES", "GENRE", "GENTS", "GREEN", "GREET", "HENGE", "NESTS", "RENTS", "RESET", "RESTS", "SENSE", "SERGE", "SHEEN", "SHEER", "SHEET", "SNEER", "STEER", "STERN", "TEENS", "TEETH", "TENET", "TENSE", "TENTH", "TENTS", "TERNS", "TERSE", "TESTS", "THERE", "THESE", "THREE", "TREES", "TRESS", "EGRESS", "EGRETS", "ENTERS", "ENTREE", "ESTERS", "ETHERS", "GENRES", "GREENS", "GREETS", "NETHER", "REGENT", "REGRET", "RENEGE", "RENTER", "RESENT", "RESETS", "RETEST", "SEETHE", "SENSES", "SERENE", "SETTEE", "SETTER", "SHEETS", "SNEERS", "STEERS", "STERNS", "STREET", "STRESS", "TEETER", "TENETS", "TENSER", "TENSES", "TENTHS", "TERSER", "TESTER", "TETHER", "THESES", "THREES", "THRESH", "TSETSE", "ENTREES", "GREENER", "REENTER", "REGENTS", "REGRESS", "REGRETS", "RENEGES", "RENTERS", "RESENTS", "RETESTS", "SEETHES", "SETTEES", "SETTERS", "STREETS", "TEETERS", "TENSEST", "TESTERS", "TETHERS", "ETHERNET", "GREENEST", "REENTERS", "STERNEST", "STRESSES", "TERSEST", "STRENGTH", "STRENGTHS", "STRENGTHEN", "STRENGTHENS", "STRENGTHENER"]}/*END*/;
+  SCHEDULE = /*SCHEDULE*/[{"start": "2026-10-26", "title": "Fall Fun Spelling Bee", "banner": "Happy Halloween! 🎃 However you spend it, enjoy a fun fall week.", "center": "T", "outer": ["C", "E", "M", "O", "S", "U"], "words": ["COST", "CUTE", "CUTS", "MEET", "MOST", "MUST", "MUTE", "OUTS", "SECT", "SETS", "STEM", "TEST", "TOES", "TOME", "TOOT", "TOSS", "TOTE", "TOUT", "COMET", "COSTS", "MEETS", "MOTTO", "SCOOT", "SCOUT", "STEMS", "STOUT", "TESTS", "TOTEM", "COMETS", "CUSTOM", "ESTEEM", "SCOUTS", "UTMOST", "COMMUTE", "COSTUME", "CUSTOMS", "OUTCOME", "COSTUMES", "OUTCOMES"]}, {"start": "2026-11-02", "title": "Rest & Recovery Spelling Bee", "banner": "Clocks fall back 11/1. Use the extra hour to rest! Happy Diwali (11/8) to all who celebrate. 🪔", "center": "L", "outer": ["B", "E", "M", "R", "S", "U"], "words": ["BELL", "BLUE", "BLUR", "BULB", "BULL", "EELS", "ELSE", "LESS", "LURE", "MULE", "REEL", "RULE", "SELL", "BELLS", "BLESS", "BLUES", "BULBS", "BULLS", "MULES", "REBEL", "REELS", "RULER", "RULES", "SELLS", "SMELL", "BUBBLE", "EMBLEM", "LESSER", "LUMBER", "REBELS", "RUBBLE", "RUBLES", "RULERS", "RUMBLE", "SELLER", "SMELLS", "BUBBLES", "MUMBLES", "RUMBLES", "SELLERS", "SLUMBER", "USELESS", "RESEMBLE", "BUMBLEBEE", "RESEMBLES"]}, {"start": "2026-11-09", "title": "Bladder Health Month Spelling Bee", "banner": "November is Bladder Health Month. 💧 And thank you to the veterans on our team and those we care for (Veterans Day, 11/11).", "center": "D", "outer": ["A", "E", "H", "R", "T", "Y"], "words": ["DARE", "DART", "DATE", "DEAR", "DEED", "DEER", "DYED", "DYER", "EDDY", "EYED", "HARD", "HEAD", "HEED", "HERD", "READ", "REED", "YARD", "ADDED", "AHEAD", "DARED", "DATED", "DETER", "DRYER", "HARDY", "HEARD", "RADAR", "RATED", "READY", "TRADE", "TREAD", "ADHERE", "DREARY", "HARDER", "HEADED", "HEADER", "HEATED", "READER", "THREAD", "TRADED", "TRADER", "HEARTED", "HYDRATE", "TREATED", "HYDRATED", "RETREATED", "DEHYDRATED"]}, {"start": "2026-11-16", "title": "Friends & Gratitude Spelling Bee", "banner": "Friendsgiving week! 🧡 Thank a teammate who made your week easier.", "center": "F", "outer": ["D", "E", "I", "N", "R", "S"], "words": ["FEED", "FEES", "FEND", "FERN", "FINE", "FINS", "FIRE", "FREE", "REEF", "FEEDS", "FIEND", "FINDS", "FINED", "FINER", "FINES", "FIRED", "FIRES", "FREED", "FRIED", "FRIES", "REFER", "DEFEND", "DEFINE", "DIFFER", "FEEDER", "FENDER", "FINDER", "FRIEND", "REFERS", "REFINE", "DEFENSE", "DEFINED", "DEFINES", "DIFFERS", "FINESSE", "FRIENDS", "REFEREE", "REFINED", "DEFENDED", "DEFENDER", "DEFENSES", "DEFENDERS"]}, {"start": "2026-11-23", "title": "The Holiday Table Spelling Bee", "banner": "Happy Thanksgiving (11/26) to those celebrating! 🥧 Running a Turkey Trot? Warm up first.", "center": "I", "outer": ["F", "G", "N", "S", "T", "U"], "words": ["FIGS", "FINS", "FIST", "FITS", "GIFT", "SIGN", "SING", "SINS", "SITS", "SUIT", "UNIT", "FISTS", "GIFTS", "SIGNS", "SINGS", "STIFF", "STING", "SUING", "SUITS", "UNFIT", "UNITS", "USING", "INNING", "INSIST", "STINGS", "TUNING", "FITTING", "INNINGS", "INSISTS", "ISSUING", "SIGNING", "SINGING", "SITTING", "STUFFING", "STUNNING", "INSISTING"]}, {"start": "2026-11-30", "title": "Desk & Posture Spelling Bee", "banner": "Check your setup this week: screen at eye level, feet supported, and a stretch break every hour. 💻", "center": "T", "outer": ["A", "D", "G", "I", "N", "S"], "words": ["ANTS", "SITS", "TAGS", "DIGIT", "GIANT", "SAINT", "SATIN", "STAIN", "STAND", "STING", "ASSIST", "ATTAIN", "DATING", "DIGITS", "GIANTS", "INSIST", "SAINTS", "STAINS", "STANDS", "STINGS", "AGAINST", "DISTANT", "INSISTS", "INSTANT", "SITTING", "STAGING", "STATING", "TANNING", "TASTING", "STANDING", "ASSISTANT", "ASSISTING", "INSISTING", "ASSISTANTS", "INITIATING"]}, {"start": "2026-12-07", "title": "Breathe Easy Spelling Bee", "banner": "Busy season? Take three slow belly breaths. 🌬️ Happy Hanukkah (12/4 to 12/12) to all who celebrate.", "center": "B", "outer": ["A", "E", "H", "R", "S", "T"], "words": ["BABE", "BARE", "BASE", "BASS", "BATH", "BATS", "BEAR", "BEAT", "BEES", "BEST", "BETA", "BETS", "HERB", "STAB", "TABS", "BABES", "BASES", "BATHE", "BATHS", "BEARS", "BEAST", "BEATS", "BEETS", "BRASS", "HERBS", "SABER", "BARBER", "BATTER", "BEARER", "BEASTS", "BETTER", "BREATH", "BREATHE", "BREATHS", "BREATHER", "BREATHES", "HEARTBEAT"]}, {"start": "2026-12-14", "title": "Growing Families Spelling Bee", "banner": "Celebrating every path to parenthood and the care teams who support it. 👶", "center": "N", "outer": ["A", "E", "P", "R", "S", "T"], "words": ["ANTE", "ANTS", "EARN", "NEAR", "NEAT", "NEST", "NETS", "PANE", "PANS", "PANT", "PENS", "RANT", "RENT", "SANE", "SEEN", "SENT", "SNAP", "SPAN", "TEEN", "TENS", "TENT", "ARENA", "ASPEN", "EARNS", "EATEN", "ENTER", "NESTS", "PANTS", "RENTS", "SENSE", "SNAPS", "SPANS", "SPENT", "STERN", "TEENS", "TENSE", "TENTS", "ENTERS", "NEARER", "PARENT", "PATENT", "RESENT", "SENATE", "SENSES", "SERENE", "TANNER", "TENANT", "ANTENNA", "EARNEST", "EASTERN", "NEAREST", "PARENTS", "PARTNER", "PATENTS", "PATTERN", "PRESENT", "TENANTS", "ANTENNAS", "APPARENT", "PARTNERS", "PATTERNS", "PRESENTS", "PRESENTER", "REPRESENT", "REPRESENTS", "TRANSPARENT"]}, {"start": "2026-12-21", "title": "Winter Lights Spelling Bee", "banner": "Happy solstice (12/21)! 🕯️ Wishing everyone a warm season, however and wherever you celebrate.", "center": "C", "outer": ["A", "D", "E", "L", "N", "S"], "words": ["CALL", "CANE", "CANS", "CASE", "CELL", "CLAD", "CLAN", "LACE", "SCAN", "CALLS", "CANAL", "CASES", "CEASE", "CELLS", "CLANS", "CLASS", "CLEAN", "DANCE", "LANCE", "SCALE", "SCANS", "SCENE", "ACCESS", "ASCEND", "CALLED", "CANCEL", "CANDLE", "CANNED", "CEASED", "CLEANS", "DANCED", "DANCES", "DECADE", "SCALED", "SCALES", "SCENES", "CANDLES", "CASCADE", "CLASSES", "CLEANED", "CLEANSE", "DECADES", "DESCEND", "ESSENCE", "SCANDAL", "ACCESSED", "CANCELED", "DESCENDED"]}, {"start": "2026-12-28", "title": "Year of Wins Spelling Bee", "banner": "Here's to every patient milestone of 2026, big and small. 🎉 Happy New Year!", "center": "B", "outer": ["A", "C", "E", "L", "R", "T"], "words": ["ABLE", "BABE", "BALE", "BALL", "BARE", "BEAR", "BEAT", "BELL", "BELT", "BETA", "CRAB", "BRACE", "CABLE", "LABEL", "REBEL", "TABLE", "BALLET", "BARBER", "BARREL", "BATTER", "BATTLE", "BEARER", "BETTER", "TABLET", "BRACELET", "CEREBRAL", "CELEBRATE"]}, {"start": "2027-01-04", "title": "New Habits Spelling Bee", "banner": "New year, small steps. 🌱 Our favorite resolution is doing the home program.", "center": "T", "outer": ["A", "E", "I", "M", "O", "V"], "words": ["ATOM", "ITEM", "MATE", "MEAT", "MEET", "TAME", "TEAM", "TIME", "TOME", "TOOT", "TOTE", "VETO", "VOTE", "MATTE", "MOTTO", "TOTEM", "MOTIVE", "TATTOO", "IMITATE", "MOTIVATE", "TEAMMATE"]}, {"start": "2027-01-11", "title": "Core 101 Spelling Bee", "banner": "Your core is a team: diaphragm, deep abs, back muscles and pelvic floor. 💪", "center": "L", "outer": ["A", "B", "I", "S", "T", "Y"], "words": ["ALLY", "BAIL", "BALL", "LABS", "LAST", "LAYS", "LIST", "SAIL", "SALT", "SLAB", "SLAY", "SLIT", "TAIL", "TALL", "TILL", "TILT", "ATLAS", "BASIL", "BLAST", "BLISS", "LASTS", "LISTS", "SAILS", "SALTS", "SALTY", "SILLY", "STALL", "STILL", "TAILS", "TALLY", "BLASTS", "LASTLY", "STALLS", "STILLS", "ABILITY", "STYLIST", "LIABILITY", "STABILITY"]}, {"start": "2027-01-18", "title": "Healing & Recovery Spelling Bee", "banner": "Honoring Dr. Martin Luther King Jr. (1/18), a day of service. 🤝 Here's to the care we give every day.", "center": "L", "outer": ["A", "E", "G", "H", "I", "N"], "words": ["GALA", "GALE", "GLEE", "GLEN", "HAIL", "HALE", "HALL", "HEAL", "HEEL", "HILL", "LANE", "LEAN", "LIEN", "LINE", "NAIL", "AGILE", "ALGAE", "ALIEN", "ALIGN", "ANGEL", "ANGLE", "EAGLE", "LEGAL", "LINEN", "INHALE", "LINING", "HEALING", "LEANING", "LINEAGE", "GIGGLING", "INHALING"]}, {"start": "2027-01-25", "title": "Bones & Balance Spelling Bee", "banner": "Icy sidewalk or sunny trail, sturdy shoes and good balance help everywhere. 🦴", "center": "N", "outer": ["E", "K", "L", "O", "S", "T"], "words": ["KEEN", "KNEE", "KNOT", "LENS", "LENT", "LONE", "NEON", "NEST", "NETS", "NONE", "NOON", "NOSE", "NOTE", "ONES", "ONTO", "SEEN", "SENT", "SONS", "SOON", "TEEN", "TENS", "TENT", "TONE", "TONS", "KNEEL", "KNEES", "KNOTS", "NESTS", "NOSES", "NOTES", "ONSET", "SENSE", "STONE", "TEENS", "TENSE", "TENTS", "TOKEN", "TONES", "KENNEL", "LENSES", "LESSON", "LOOSEN", "SENSES", "STOLEN", "STONES", "TOKENS", "LESSONS", "NONSENSE", "SKELETON", "SKELETONS"]}, {"start": "2027-02-01", "title": "Heart Month Spelling Bee", "banner": "February is American Heart Month and Black History Month. ❤️ Happy Lunar New Year (2/6)!", "center": "N", "outer": ["A", "G", "I", "K", "L", "W"], "words": ["AKIN", "GAIN", "GANG", "KING", "LAWN", "LINK", "NAIL", "WING", "WINK", "AGAIN", "AGING", "ALIGN", "INNING", "LIKING", "LINING", "WAKING", "GAINING", "LINKING", "NAGGING", "WAILING", "WALKING", "WILLING", "WINNING", "GIGGLING"]}, {"start": "2027-02-08", "title": "Self-Care & Kindness Spelling Bee", "banner": "Love yourself, love your crew. 💌 Happy Valentine's (and Galentine's) Day!", "center": "W", "outer": ["A", "E", "H", "R", "S", "T"], "words": ["SAWS", "STEW", "SWAT", "THAW", "WARE", "WARS", "WASH", "WEAR", "WERE", "WEST", "WHAT", "WHEE", "WHEW", "AWARE", "STRAW", "SWEAT", "SWEET", "THREW", "TWEET", "WASTE", "WATER", "WEARS", "WHEAT", "WHERE", "STRAWS", "SWEATS", "SWEETS", "WASHER", "WASHES", "WASTES", "WATERS", "WREATH", "SWEATER", "SWEETER", "WEATHER", "WHEREAS", "WHETHER", "SWEATERS", "SWEETHEART", "SWEETHEARTS"]}]/*END*/;
+  WEEK = this.pickWeek();
+  CENTER = this.WEEK.center;
+  ALL_LETTERS = [this.WEEK.center, ...this.WEEK.outer];
+  OUTER_INIT = [...this.WEEK.outer];
+  ALL_WORDS = this.WEEK.words;
+
+  // Weekly rotation: the last entry whose Monday (viewer's local date) has arrived wins.
+  // Before the first entry the October puzzle (DEFAULT) shows; after the last, the last week stays up.
+  // Preview any day with ?date=YYYY-MM-DD.
+  pickWeek() {
+    let today;
+    try {
+      const p = new URLSearchParams(window.location.search).get('date');
+      if (p && /^\d{4}-\d{2}-\d{2}$/.test(p)) today = p;
+    } catch (e) { /* no location in this context */ }
+    if (!today) {
+      const d = new Date();
+      today = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+    }
+    let pick = this.DEFAULT;
+    for (const w of this.SCHEDULE) if (w.start <= today) pick = w;
+    return pick;
+  }
 
   RANKS = [
     { name: 'Warm-Up',       pct: 0    },
@@ -951,6 +949,10 @@ class Component extends DCLogic {
     });
 
     return {
+      title: this.WEEK.title,
+      banner: this.WEEK.banner,
+      outerLine: this.WEEK.outer.join(' · '),
+      center: this.CENTER,
       score,
       rank: rank.name,
       rankPct,
